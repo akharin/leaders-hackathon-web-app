@@ -2,13 +2,15 @@
 	display: flex;
 	flex: 1 1 100%;
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 64px);
 }
 
 .watching-page__side {
 	flex: none;
 	width: 430px;
+	height: 100%;
 	padding: 16px 0;
+	overflow-y: auto;
 }
 
 .watching-page__map {

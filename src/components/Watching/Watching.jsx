@@ -25,6 +25,7 @@ class Watching extends React.Component {
 	lastWatchingObject = undefined;
 	clearMarkersTimeout = undefined;
 	objectsLayer = React.createRef();
+	locationsLayer = React.createRef();
 
 	constructor(props) {
 		super(props);
@@ -74,6 +75,7 @@ class Watching extends React.Component {
 							title={usersMap[loc.userId].name}
 							desc={usersMap[loc.userId].position}
 							icon={personIcon}
+							onClick={() => this.handleListLocationClick(i)}
 						/>
 					)) : objects.map((object, i) => (
 						<SideListItem
@@ -117,14 +119,16 @@ class Watching extends React.Component {
 						))}
 					</LayerGroup>
 
-					{locations.map((location, index) => (
-						<Marker
-							key={index}
-							icon={markerIcon}
-							position={[location.lat, location.lng]}
-							title={location.userId}
-						/>
-					))}
+					<LayerGroup ref={this.locationsLayer}>
+						{locations.map((location, index) => (
+							<Marker
+								key={index}
+								icon={markerIcon}
+								position={[location.lat, location.lng]}
+								title={location.userId}
+							/>
+						))}
+					</LayerGroup>
 				</MapContainer>
 			</div>
 		);
@@ -164,8 +168,10 @@ class Watching extends React.Component {
 	};
 
 	handleListObjectClick = (objectId, index) => {
-		const bounds = this.objectsLayer.current.getLayers()[index].getBounds();
-		this.selectObject(objectId, bounds);
+		if (this.objectsLayer.current) {
+			const bounds = this.objectsLayer.current.getLayers()[index].getBounds();
+			this.selectObject(objectId, bounds);
+		}
 	};
 
 	handleMapObjectClick = (event, objectId) => {
@@ -180,6 +186,13 @@ class Watching extends React.Component {
 		this.stopWatching();
 		this.startWatching(objectId);
 	}
+
+	handleListLocationClick = (index) => {
+		if (this.locationsLayer && this.map) {
+			const pos = this.locationsLayer.current.getLayers()[index].getLatLng();
+			this.map.panTo(pos);
+		}
+	};
 
 	startWatching = (objectId) => {
 		if (this.socket) {
