@@ -10,7 +10,7 @@ import personIcon from './images/person.svg';
 import backIcon from './images/back.svg';
 import {convertObjectCoords} from "./utils/convertObjectCoords";
 import {determineBounds} from "./utils/determineBounds";
-import {backendUrl} from "../backendUrl";
+import {backendUrl} from "../../backendUrl";
 import SideListItem from "../SideListItem";
 
 const markerIcon = new Icon({
@@ -47,6 +47,9 @@ class Watching extends React.Component {
 
 	componentWillUnmount() {
 		this.stopWatching();
+		if (this.socket) {
+			this.socket.disconnect();
+		}
 	}
 
 	render() {
